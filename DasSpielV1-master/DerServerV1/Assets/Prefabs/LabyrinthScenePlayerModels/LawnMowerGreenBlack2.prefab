@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 135946586875332886}
   m_Layer: 12
   m_Name: Sphere (4)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 65161260683619748}
   m_Layer: 12
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: NoHitBoxPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -423,7 +423,7 @@ GameObject:
   - component: {fileID: 136882530207182654}
   m_Layer: 12
   m_Name: Achse2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -515,7 +515,7 @@ GameObject:
   - component: {fileID: 136935661452045016}
   m_Layer: 12
   m_Name: Achse1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 65892941442252886}
   m_Layer: 12
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -697,9 +697,10 @@ GameObject:
   - component: {fileID: 5064693267324902409}
   - component: {fileID: 7079322608467858401}
   - component: {fileID: 4656981910260648909}
+  - component: {fileID: 4051721153717681696}
   m_Layer: 12
   m_Name: LawnMowerGreenBlack2
-  m_TagString: NoHitBoxPlayer
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -713,7 +714,7 @@ Transform:
   m_GameObject: {fileID: 1330263283501386}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.03, z: 0}
-  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children:
   - {fileID: 4406145399777982}
   - {fileID: 4912059736918712}
@@ -745,10 +746,10 @@ Rigidbody:
   m_Mass: 999999
   m_Drag: 1
   m_AngularDrag: 5
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 84
+  m_Constraints: 80
   m_CollisionDetection: 2
 --- !u!114 &5064693267324902409
 MonoBehaviour:
@@ -812,6 +813,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4051721153717681696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1330263283501386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98862da2dde36be4dadaadb2710d385f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1350185105954478
 GameObject:
   m_ObjectHideFlags: 0
@@ -944,7 +957,7 @@ GameObject:
   - component: {fileID: 4725322752919740}
   m_Layer: 12
   m_Name: Griff
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1079,7 +1092,7 @@ GameObject:
   - component: {fileID: 135974838531208656}
   m_Layer: 12
   m_Name: Wheel2
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1335,7 +1348,7 @@ GameObject:
   - component: {fileID: 135744426556935158}
   m_Layer: 12
   m_Name: Wheel4
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1426,7 +1439,7 @@ GameObject:
   - component: {fileID: 136288474966594222}
   m_Layer: 12
   m_Name: Lid
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1518,7 +1531,7 @@ GameObject:
   - component: {fileID: 135500939000219320}
   m_Layer: 12
   m_Name: Wheel1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1639,7 +1652,7 @@ GameObject:
   - component: {fileID: 135218602062661404}
   m_Layer: 12
   m_Name: Wheel3
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1931,7 +1944,7 @@ GameObject:
   - component: {fileID: 65546726725890026}
   m_Layer: 12
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -973,11 +973,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4510338091929060}
   - component: {fileID: 54865441881815618}
-  - component: {fileID: 114580356418998202}
-  - component: {fileID: 114570318669405356}
   - component: {fileID: 114161659019298160}
   - component: {fileID: 114186936064022278}
   - component: {fileID: 4255625228249178403}
+  - component: {fileID: 1268378124}
   m_Layer: 12
   m_Name: LawnMowerBlack2
   m_TagString: Player
@@ -1031,35 +1030,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 2
---- !u!114 &114580356418998202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1460008640305242}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c43bb631591a63c48b1abb6c4306bffb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  distance: 0
-  angle: 0
-  coll: {fileID: 0}
-  player: {fileID: 1460008640305242}
-  RotateSpeed: 30
---- !u!114 &114570318669405356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1460008640305242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98862da2dde36be4dadaadb2710d385f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114161659019298160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1122,6 +1092,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1268378124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460008640305242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98862da2dde36be4dadaadb2710d385f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1463099396347456
 GameObject:
   m_ObjectHideFlags: 0

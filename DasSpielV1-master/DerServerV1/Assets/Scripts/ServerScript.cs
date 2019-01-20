@@ -243,7 +243,7 @@ public class ServerScript : MonoBehaviour {
     {
         try
         {
-            tcpListener = new TcpListener(IPAddress.Any, 5555);
+            tcpListener = new TcpListener(IPAddress.Any, 0);
              
             tcpListener.Start();
             //Debug.Log("Server started");

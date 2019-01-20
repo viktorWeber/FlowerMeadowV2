@@ -72,6 +72,8 @@ public class ServerScript2 : MonoBehaviour {
 
         isRunning = true;
 
+        playerModelNumber = 3;
+
         //// Die Auskommentierung der unteren beiden Zeilen rückgängig machen, um einen Dummy-Player-Objekt für Testzwecke zu haben
         //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.999", "DUMMYDUMMYMANNNN", 99999));
         //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.999"));
@@ -115,7 +117,7 @@ public class ServerScript2 : MonoBehaviour {
     {
         try
         {
-            tcpListener = new TcpListener(IPAddress.Any, 5555);
+            tcpListener = new TcpListener(IPAddress.Any, 0);
             
             tcpListener.Start();
             //Debug.Log("Server started");
@@ -342,6 +344,13 @@ public class ServerScript2 : MonoBehaviour {
             {
                 //msg = "{\"error\": {\"message\": \"Nutzername hat zu viele Zeichen\"}}";
                 msg = "Dein Nutzername darf nicht mehr als 16 Zeichen haben";
+                SendMessage(client, msg);
+                yield break;
+            }
+            if (username.Equals(""))
+            {
+                //msg = "{\"error\": {\"message\": \"Nutzername hat zu viele Zeichen\"}}";
+                msg = "Du hast keinen Nutzernamen angegeben!";
                 SendMessage(client, msg);
                 yield break;
             }
