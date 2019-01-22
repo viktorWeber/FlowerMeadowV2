@@ -66,26 +66,26 @@ public class PlayerScript2 : MonoBehaviour {
         }
     }
 
-    public void StartTheMow()
-    {
-        //TrailRenderer tr = GetComponent<TrailRenderer>();
-        TrailRenderer tr = trailRendererPos.GetComponent<TrailRenderer>();
-        tr.Clear();
-        //Vector3 newPos = GetComponent<Transform>().forward + GetComponent<Transform>().right;
-        //newPos = newPos(newPos.x)
-        //tr.transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
-        Debug.Log("trM: " + tr.material);
-        tr.material = grassMaterial;
-        Debug.Log("trM: " + tr.material);
-        tr.startWidth = 0.9f;
-        tr.endWidth = 0.9f;
-        tr.time = 30;
-    }
+    //public void StartTheMow()
+    //{
+    //    //TrailRenderer tr = GetComponent<TrailRenderer>();
+    //    TrailRenderer tr = trailRendererPos.GetComponent<TrailRenderer>();
+    //    tr.Clear();
+    //    //Vector3 newPos = GetComponent<Transform>().forward + GetComponent<Transform>().right;
+    //    //newPos = newPos(newPos.x)
+    //    //tr.transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
+    //    Debug.Log("trM: " + tr.material);
+    //    tr.material = grassMaterial;
+    //    Debug.Log("trM: " + tr.material);
+    //    tr.startWidth = 0.9f;
+    //    tr.endWidth = 0.9f;
+    //    tr.time = 30;
+    //}
 
-    public void StopTheMow()
-    {
-        trailRendererPos.GetComponent<TrailRenderer>().time = 0;
-    }
+    //public void StopTheMow()
+    //{
+    //    trailRendererPos.GetComponent<TrailRenderer>().time = 0;
+    //}
 
     private Vector3 ConvertToSplatMapCoordinate(Vector3 playerPos)
     {

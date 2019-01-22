@@ -9,6 +9,7 @@ using System.Threading;
 using System.IO;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Net.NetworkInformation;
 
 public class Player
 {
@@ -78,6 +79,11 @@ public class ServerScript : MonoBehaviour {
 
     public int maxNumOfActionsInQueuePerPlayer = 10;
 
+    public InputField portInput;
+    public Text portInfoText;
+
+    private int portNumber;
+
     IEnumerator Start() {
         startButtonClicked = false;
         modalPanelObject.SetActive(true);
@@ -85,9 +91,41 @@ public class ServerScript : MonoBehaviour {
         {
             yield return null;
         }
+        Debug.Log(portInput.text);
+        string portInputNum = portInput.text;
+        if (portInputNum.Equals(""))
+        {
+            Debug.Log("2");
+            portNumber = 0;
+        }
+        else if (Int32.TryParse(portInputNum, out portNumber))
+        {
+            Debug.Log("3");
+            if (portNumber < 1024 || portNumber > 65535)
+            {
+                Debug.Log("4");
+                portInfoText.text = "Port invalid";
+                StartCoroutine(Start());
+                yield break;
+            }
+
+            if (!PortAvailable(portNumber))
+            {
+                Debug.Log("5");
+                portInfoText.text = "Port taken";
+                StartCoroutine(Start());
+                yield break;
+            }
+
+        }
+        else {
+            portInfoText.text = "Port invalid";
+            StartCoroutine(Start());
+            yield break;
+        }
         // Es wird nur die Player-Layer benötigt
         layerMask = 1 << 11;
-  
+        Debug.Log("6");
         modalPanelObject.SetActive(false);
 
         isRunning = true;
@@ -96,17 +134,20 @@ public class ServerScript : MonoBehaviour {
             //InvokeRepeating("SpawnStandardPickUp", 0, 20);
             //InvokeRepeating("SpawnPoisonousPickUp", 6, 20);
             //InvokeRepeating("SpawnGoldenPickUp", 29, 39);
-            InvokeRepeating("SpawnStandardPickUp", 0, 9);
-            InvokeRepeating("SpawnPoisonousPickUp", 6, 13);
-            InvokeRepeating("SpawnGoldenPickUp", 25, 27);
+            if(!IsInvoking("SpawnStandardPickUp"))
+                InvokeRepeating("SpawnStandardPickUp", 0, 9);
+            if (!IsInvoking("SpawnPoisonousPickUp"))
+                InvokeRepeating("SpawnPoisonousPickUp", 6, 13);
+            if (!IsInvoking("SpawnGoldenPickUp"))
+                InvokeRepeating("SpawnGoldenPickUp", 25, 27);
         }
 
-        //// Die Auskommentierung der unteren beiden Zeilen rückgängig machen, um einen Dummy-Player-Objekt für Testzwecke zu haben
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.1", "Player1", 99999));
+        // Die Auskommentierung der unteren beiden Zeilen rückgängig machen, um einen Dummy-Player-Objekt für Testzwecke zu haben
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.1", "Dominik", 99999));
         //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.1"));
 
         //// Ein zweites Dummy-Player-Objekt:
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.2", "Player2", 222222));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.2", "Viktor", 222222));
         //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.2"));
 
         //// Ein drittes Dummy-Player-Objekt:
@@ -121,61 +162,10 @@ public class ServerScript : MonoBehaviour {
         //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.5", "Player5", 333333));
         //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.5"));
 
-        //// ...
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.6", "Player6", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.6"));
-
-        //// ..
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.7", "Player7", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.7"));
-
-        //// .
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.8", "Player8", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.8"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.9", "Player9", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.9"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.10", "Player10", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.10"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.11", "Player11", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.11"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.12", "Player12", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.12"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.13", "Player13", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.13"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.14", "Player14", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.14"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.15", "Player15", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.15"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.16", "Player16", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.16"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.17", "Player17", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.17"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.18", "Player18", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.18"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.19", "Player19", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.19"));
-
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.20", "Player20", 333333)); // Maximale Spieleranzahl
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.20"));
-
-
-
 
         ThreadStart ts = new ThreadStart(StartListening);
         tcpListenerThread = new Thread(ts);
         tcpListenerThread.Start();
-           
     }
 
     private void Update()
@@ -243,8 +233,8 @@ public class ServerScript : MonoBehaviour {
     {
         try
         {
-            tcpListener = new TcpListener(IPAddress.Any, 0);
-             
+            tcpListener = new TcpListener(IPAddress.Any, portNumber);
+            //tcpListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
             tcpListener.Start();
             //Debug.Log("Server started");
             TcpClient connectedClient = null;
@@ -344,20 +334,26 @@ public class ServerScript : MonoBehaviour {
 
                 }
             }
-                   
+            if(tcpListener != null)
+                tcpListener.Stop();
         }
 
         catch (Exception ex)
         {
+            isRunning = false;
+            tcpListener.Stop();
+            //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_StopServer());
             Debug.Log(ex.ToString());
+            //portInfoText.text = "Server stopped";
             Debug.Log("Server stopped");
         }
-
+        
         finally
         {
             isRunning = false;
-            tcpListener.Stop();          
-	    }
+            tcpListener.Stop();
+            //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_StopServer());
+        }
     }
 
 
@@ -1015,6 +1011,12 @@ public class ServerScript : MonoBehaviour {
         yield return null;
     }
 
+    public IEnumerator ExecuteOnMainThread_StopServer()
+    {
+        StopServer();
+        yield return null;
+    }
+
     private void SendMessage(TcpClient client, string serverMessage)
     {
         try
@@ -1120,6 +1122,8 @@ public class ServerScript : MonoBehaviour {
 
     void OnApplicationQuit()
     {
+        portInfoText.text = "";
+        //portInput.text = "";
         StopListening();
         //RemovePickUps();
         RemoveAllPlayers();
@@ -1136,6 +1140,100 @@ public class ServerScript : MonoBehaviour {
         }
     }
 
+    public static bool PortAvailable(int portno)
+    {
+        //bool isAvailable = true;
+        TcpListener tcpListenerTest = null;
+       
+        try
+        {
+            tcpListenerTest = new TcpListener(IPAddress.Any, portno);
+            //tcpListenerTest.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+            tcpListenerTest.Start();
+            if (tcpListenerTest != null)
+                tcpListenerTest.Stop();
+            return true;
+        }
+        catch (SocketException)
+        {
+            if (tcpListenerTest != null)
+                tcpListenerTest.Stop();
+            return false;
+        }
+
+        //string hostname = "localhost";
+        ////int portno = 9081;
+        //IPAddress ipa = (IPAddress)Dns.GetHostAddresses(hostname)[0];
+
+
+        //try
+        //{
+        //    Socket sock = new Socket(ipa.AddressFamily, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+        //    sock.Connect(ipa, portno);
+        //    if (sock.Connected == true)  // Port is in use and connection is successful
+        //        return false;
+        //    sock.Close();
+        //    return true;
+        //}
+        //catch (SocketException ex)
+        //{
+        //    if (ex.ErrorCode == 10061)  // No connection could be made because the target machine actively refused it
+        //        return false;
+        //    else
+        //    {
+        //        Debug.Log(ex.Message);
+        //        return true;
+        //    }
+
+        //}
+
+        // Evaluate current system tcp connections. This is the same information provided
+        // by the netstat command line application, just in .Net strongly-typed object
+        // form.  We will look through the list, and if our port we would like to use
+        // in our TcpClient is occupied, we will set isAvailable to false.
+        //IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+        //TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+        //IPEndPoint[] listenerEndPoints = ipGlobalProperties.GetActiveTcpListeners();
+
+        //foreach (TcpConnectionInformation tcpi in tcpConnInfoArray)
+        //{
+        //    Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Address);
+        //    Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Port);
+        //    if (tcpi.LocalEndPoint.Port == port)
+        //    {
+        //        Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Port);
+        //        Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Address);
+        //        isAvailable = false;
+        //        break;
+        //    }
+        //}
+
+        //if (isAvailable)
+        //{
+        //    foreach (IPEndPoint ipEndPoint in listenerEndPoints)
+        //    {
+        //        //Debug.Log("ipEndPoint.Address: " + ipEndPoint.Address);
+        //        if (ipEndPoint.Port == port)
+        //        {
+        //            //Debug.Log("ipEndPoint.Address: " + ipEndPoint.Address);
+        //            isAvailable = false;
+        //            break;
+        //        }
+        //    }
+        //}
+        //if (isAvailable)
+        //{
+        //    IPGlobalProperties ipGP = IPGlobalProperties.GetIPGlobalProperties();
+        //    IPEndPoint[] endpoints = ipGP.GetActiveTcpListeners();
+        //    if (endpoints == null || endpoints.Length == 0) return true;
+        //    for (int i = 0; i < endpoints.Length; i++)
+        //        if (endpoints[i].Port == port)
+        //            return false;
+        //    return true;
+        //}
+
+        //return isAvailable;
+    }
 }
 
 

@@ -60,36 +60,78 @@ public class ServerScript2 : MonoBehaviour {
 
     public int maxNumOfActionsInQueuePerPlayer = 10;
 
+    public InputField portInput;
+    public Text portInfoText;
+
+    private int portNumber;
+
     IEnumerator Start() {
+        Debug.Log("In Start()");
         startButtonClicked = false;
         modalPanelObject.SetActive(true);
         while (!startButtonClicked)
         {
             yield return null;
         }
-  
+        string portInputNum = portInput.text;
+        if (portInputNum.Equals(""))
+        {
+            portNumber = 0;
+        }
+        else if (Int32.TryParse(portInputNum, out portNumber))
+        {
+            if (portNumber < 1024 || portNumber > 65535)
+            {
+                portInfoText.text = "Port invalid";
+                StartCoroutine(Start());
+                yield break;
+            }
+
+            if (!PortAvailable(portNumber))
+            {
+                portInfoText.text = "Port taken";
+                StartCoroutine(Start());
+                yield break;
+            }
+
+        }
+        else
+        {
+            portInfoText.text = "Port invalid";
+            StartCoroutine(Start());
+            yield break;
+        }
+ 
         modalPanelObject.SetActive(false);
 
         isRunning = true;
+  
 
-        playerModelNumber = 3;
-
-        //// Die Auskommentierung der unteren beiden Zeilen rückgängig machen, um einen Dummy-Player-Objekt für Testzwecke zu haben
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.999", "DUMMYDUMMYMANNNN", 99999));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.999"));
+        // Die Auskommentierung der unteren beiden Zeilen rückgängig machen, um einen Dummy-Player-Objekt für Testzwecke zu haben
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.1", "Dominik", 99999));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.1"));
 
         //// Ein zweites Dummy-Player-Objekt:
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.111", "DUMMYDUMMYMANNN2", 222222));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.111"));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.2", "Viktor", 222222));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.2"));
 
         //// Ein drittes Dummy-Player-Objekt:
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.222", "DUMMYDUMMYMANNN3", 333333));
-        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.222"));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.3", "Player3", 333333));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.3"));
+
+        //// 4. 
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.4", "Player4", 222222));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.4"));
+
+        //// 5.
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_AddNewPlayer(new TcpClient(), "999.999.999.5", "Player5", 333333));
+        //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer("999.999.999.5"));
+
 
         ThreadStart ts = new ThreadStart(StartListening);
         tcpListenerThread = new Thread(ts);
         tcpListenerThread.Start();
-           
+
     }
 
     private void Update()
@@ -117,7 +159,7 @@ public class ServerScript2 : MonoBehaviour {
     {
         try
         {
-            tcpListener = new TcpListener(IPAddress.Any, 0);
+            tcpListener = new TcpListener(IPAddress.Any, portNumber);
             
             tcpListener.Start();
             //Debug.Log("Server started");
@@ -224,18 +266,22 @@ public class ServerScript2 : MonoBehaviour {
             }
                    
         }
-
         catch (Exception ex)
         {
+            isRunning = false;
+            tcpListener.Stop();
+            //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_StopServer());
             Debug.Log(ex.ToString());
+            //portInfoText.text = "Server stopped";
             Debug.Log("Server stopped");
         }
 
         finally
         {
             isRunning = false;
-            tcpListener.Stop();          
-	    }
+            tcpListener.Stop();
+            //UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_StopServer());
+        }
     }
 
 
@@ -655,7 +701,12 @@ public class ServerScript2 : MonoBehaviour {
         yield return null;
     }
 
-
+    public IEnumerator ExecuteOnMainThread_StopServer()
+    {
+        Debug.Log("In ExecuteOnMainThread_StopServer()");
+        StopServer();
+        yield return null;
+    }
 
     private void SendMessage(TcpClient client, string serverMessage)
     {
@@ -745,10 +796,12 @@ public class ServerScript2 : MonoBehaviour {
 
     void OnApplicationQuit()
     {
+        portInfoText.text = "";
+        //portInput.text = "";
         StopListening();
         //RemovePickUps();
         RemoveAllPlayers();
- 
+        playerModelNumber = 0;
         try
         {
             tcpListenerThread.Join(500);
@@ -769,6 +822,101 @@ public class ServerScript2 : MonoBehaviour {
             SceneManager.LoadScene("Labyrinth");
         else
             SceneManager.LoadScene("MainScene");
+    }
+
+    public static bool PortAvailable(int portno)
+    {
+        //bool isAvailable = true;
+        TcpListener tcpListenerTest = null;
+
+        try
+        {
+            tcpListenerTest = new TcpListener(IPAddress.Any, portno);
+            //tcpListenerTest.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+            tcpListenerTest.Start();
+            if (tcpListenerTest != null)
+                tcpListenerTest.Stop();
+            return true;
+        }
+        catch (SocketException)
+        {
+            if (tcpListenerTest != null)
+                tcpListenerTest.Stop();
+            return false;
+        }
+
+        //string hostname = "localhost";
+        ////int portno = 9081;
+        //IPAddress ipa = (IPAddress)Dns.GetHostAddresses(hostname)[0];
+
+
+        //try
+        //{
+        //    Socket sock = new Socket(ipa.AddressFamily, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+        //    sock.Connect(ipa, portno);
+        //    if (sock.Connected == true)  // Port is in use and connection is successful
+        //        return false;
+        //    sock.Close();
+        //    return true;
+        //}
+        //catch (SocketException ex)
+        //{
+        //    if (ex.ErrorCode == 10061)  // No connection could be made because the target machine actively refused it
+        //        return false;
+        //    else
+        //    {
+        //        Debug.Log(ex.Message);
+        //        return true;
+        //    }
+
+        //}
+
+        // Evaluate current system tcp connections. This is the same information provided
+        // by the netstat command line application, just in .Net strongly-typed object
+        // form.  We will look through the list, and if our port we would like to use
+        // in our TcpClient is occupied, we will set isAvailable to false.
+        //IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+        //TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+        //IPEndPoint[] listenerEndPoints = ipGlobalProperties.GetActiveTcpListeners();
+
+        //foreach (TcpConnectionInformation tcpi in tcpConnInfoArray)
+        //{
+        //    Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Address);
+        //    Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Port);
+        //    if (tcpi.LocalEndPoint.Port == port)
+        //    {
+        //        Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Port);
+        //        Debug.Log("tcpi.LocalEndPoint.Address: " + tcpi.LocalEndPoint.Address);
+        //        isAvailable = false;
+        //        break;
+        //    }
+        //}
+
+        //if (isAvailable)
+        //{
+        //    foreach (IPEndPoint ipEndPoint in listenerEndPoints)
+        //    {
+        //        //Debug.Log("ipEndPoint.Address: " + ipEndPoint.Address);
+        //        if (ipEndPoint.Port == port)
+        //        {
+        //            //Debug.Log("ipEndPoint.Address: " + ipEndPoint.Address);
+        //            isAvailable = false;
+        //            break;
+        //        }
+        //    }
+        //}
+        //if (isAvailable)
+        //{
+        //    IPGlobalProperties ipGP = IPGlobalProperties.GetIPGlobalProperties();
+        //    IPEndPoint[] endpoints = ipGP.GetActiveTcpListeners();
+        //    if (endpoints == null || endpoints.Length == 0) return true;
+        //    for (int i = 0; i < endpoints.Length; i++)
+        //        if (endpoints[i].Port == port)
+        //            return false;
+        //    return true;
+        //}
+
+        //return isAvailable;
     }
 }
 
