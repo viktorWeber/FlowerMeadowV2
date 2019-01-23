@@ -91,6 +91,7 @@ public class ServerScript : MonoBehaviour {
         {
             yield return null;
         }
+        //playerModelNumber = 4;
         Debug.Log(portInput.text);
         string portInputNum = portInput.text;
         if (portInputNum.Equals(""))
@@ -550,7 +551,8 @@ public class ServerScript : MonoBehaviour {
     }
 
     public IEnumerator ExecuteOnMainThread_AddNewPlayer(TcpClient client, string ip, string username, int clientPort)
-    {       
+    {
+        Debug.Log("players.count: " + players.Count);
         if (!players.ContainsKey(ip))
         {
             string msg = "";

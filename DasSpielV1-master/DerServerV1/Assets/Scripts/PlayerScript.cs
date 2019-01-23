@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour {
     public string playerIP;
     public Material grassMaterial;
     public GameObject trailRendererPos;
+    public ParticleSystem cuttingGrassEffect;
 
     void Start () {
         GetComponent<Rigidbody>().inertiaTensorRotation = Quaternion.identity;
@@ -73,11 +74,13 @@ public class PlayerScript : MonoBehaviour {
         tr.startWidth = 1.1f;
         tr.endWidth = 1.1f;
         tr.time = 30;
+        cuttingGrassEffect.Play();
     }
 
     public void StopTheMow()
     {
         trailRendererPos.GetComponent<TrailRenderer>().time = 0;
+        cuttingGrassEffect.Stop();
     }
 
     private Vector3 ConvertToSplatMapCoordinate(Vector3 playerPos)

@@ -375,7 +375,7 @@ public class ServerScript2 : MonoBehaviour {
 
 
     public IEnumerator ExecuteOnMainThread_AddNewPlayer(TcpClient client, string ip, string username, int clientPort)
-    {       
+    {
         if (!players.ContainsKey(ip))
         {
             string msg = "";
@@ -672,7 +672,6 @@ public class ServerScript2 : MonoBehaviour {
         Destroy(players[ip].PlayerObject);
         players.Remove(ip);
         Debug.Log(username + " disconnected and has been removed from the field and dictionary");
-        players[ip].numOfActionsInQueue--;
         yield return null;
     }
 
