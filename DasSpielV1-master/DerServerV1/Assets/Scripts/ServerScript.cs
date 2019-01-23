@@ -906,6 +906,9 @@ public class ServerScript : MonoBehaviour {
                 case "White":
                     m.color = new Color(255, 255, 255, 255);
                     break;
+                default:
+                    yield break;
+
             }
             tr.material = m;
             tr.startWidth = 0.2f;

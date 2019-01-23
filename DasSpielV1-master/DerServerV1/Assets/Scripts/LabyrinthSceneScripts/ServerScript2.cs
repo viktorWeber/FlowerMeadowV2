@@ -305,7 +305,7 @@ public class ServerScript2 : MonoBehaviour {
                 UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_SpawnPlayer(ip));
                 break;
 
-            case "MOVE":
+            case "LABYMOV":
                 int speed;
                 if (Int32.TryParse(splitData[1], out speed))
                     UnityMainThreadDispatcher.Instance().Enqueue(ExecuteOnMainThread_Move(ip, speed));
@@ -582,6 +582,8 @@ public class ServerScript2 : MonoBehaviour {
                 case "White":
                     m.color = new Color(255, 255, 255, 255);
                     break;
+                default:
+                    yield break;
             }
             tr.material = m;
             tr.startWidth = 0.2f;
